@@ -183,11 +183,11 @@ export const CompareDevelopers: React.FC<CompareDevelopersProps> = ({
   const forksB = devB ? calculateTotalForks(devB.repos) : 0
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Search Input Form */}
       <form
         onSubmit={handleCompare}
-        className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl shadow-sm space-y-4"
+        className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-2xl shadow-sm space-y-4"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Dev A Search */}
@@ -255,7 +255,7 @@ export const CompareDevelopers: React.FC<CompareDevelopersProps> = ({
       {devA && devB && (
         <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm overflow-hidden animate-in fade-in zoom-in-95 duration-300">
           {/* Header Row (Profile Cards side by side) */}
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 py-6 px-4 items-center">
+          <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1fr_auto_1fr] border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 py-6 px-4 items-center">
             {/* Dev A Profile */}
             <div className="text-center flex flex-col items-center">
               <img
@@ -313,7 +313,7 @@ export const CompareDevelopers: React.FC<CompareDevelopersProps> = ({
           </div>
 
           {/* Meta Info Comparison */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:divide-x divide-zinc-100 dark:divide-zinc-800 border-t border-zinc-200 dark:border-zinc-800 text-xs text-zinc-500 dark:text-zinc-400 p-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:divide-x divide-zinc-100 dark:divide-zinc-800 border-t border-zinc-200 dark:border-zinc-800 text-xs text-zinc-500 dark:text-zinc-400 p-6 w-full">
             {/* Dev A Bio Info */}
             <div className="space-y-2">
               {devA.user.company && (

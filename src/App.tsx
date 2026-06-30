@@ -103,6 +103,10 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('')
   const [activeUser, setActiveUser] = useState<GitHubUser | null>(null)
   const [activeRepos, setActiveRepos] = useState<GitHubRepo[]>([])
+  const [activeUsers, setActiveUsers] = useState<GitHubUser[]>([])
+  const [activeUsersRepos, setActiveUsersRepos] = useState<Record<string, GitHubRepo[]>>({})
+  const [searchResults, setSearchResults] = useState<Partial<GitHubUser>[]>([])
+  const [selectedResults, setSelectedResults] = useState<string[]>([])
   const [searchHistory, setSearchHistory] = useState<string[]>(() => {
     return readSearchHistory()
   })
@@ -274,9 +278,14 @@ function App() {
         updateRateLimit
       )
 
-      // Update states
+      // Update states (single-user mode)
       setActiveUser(userData)
       setActiveRepos(reposData)
+      // clear multi-user state and any previous search result list
+      setActiveUsers([])
+      setActiveUsersRepos({})
+      setSearchResults([])
+      setSelectedResults([])
 
       // Add to search history
       setSearchHistory((prev) => {
@@ -292,10 +301,126 @@ function App() {
     }
   }, [patToken, disableToken, updateRateLimit])
 
+  // Fetch multiple users (up to 5)
+  const fetchMultipleUsers = useCallback(async (usernames: string[]) => {
+    if (!usernames.length) return
+    if (usernames.length === 1) {
+      await fetchUserData(usernames[0])
+      return
+    }
+
+    setLoading(true)
+    setLoadingMessage(`Menyiapkan pencarian untuk ${usernames.length} pengguna...`)
+    setError(null)
+
+    const headers: Record<string, string> = {
+      Accept: 'application/vnd.github.v3+json',
+    }
+    if (patToken) headers['Authorization'] = `token ${patToken}`
+
+    const users: GitHubUser[] = []
+    const reposMap: Record<string, GitHubRepo[]> = {}
+
+    try {
+      for (let i = 0; i < usernames.length; i++) {
+        const username = usernames[i].trim()
+        setLoadingMessage(`Memuat profil ${username}... (${i + 1}/${usernames.length})`)
+
+        const userRes = await fetch(`https://api.github.com/users/${username}`, { headers })
+        updateRateLimit(userRes.headers)
+        if (!userRes.ok) {
+          if (userRes.status === 401) {
+            disableToken('Token Personal Access Anda tidak valid atau kedaluwarsa. Silakan masukkan token GitHub PAT yang valid.')
+            throw new Error('Token Personal Access tidak valid atau kedaluwarsa.')
+          }
+          if (userRes.status === 404) throw new Error(`Pengguna GitHub "${username}" tidak ditemukan.`)
+          if (userRes.status === 403) throw new Error('Batas API telah terlampaui. Tambahkan Personal Access Token (PAT).')
+          throw new Error(`Kesalahan API (Status ${userRes.status})`)
+        }
+
+        const userData: GitHubUser = await userRes.json()
+        users.push(userData)
+
+        setLoadingMessage(`Memuat repositori ${username}...`)
+        const repos = await fetchAllRepos(username, headers, (loaded) => setLoadingMessage(`Memuat ${loaded} repositori untuk ${username}...`), updateRateLimit)
+        reposMap[userData.login] = repos
+      }
+
+      // Update states
+      setActiveUsers(users)
+      setActiveUsersRepos(reposMap)
+      // clear single-user state
+      setActiveUser(null)
+      setActiveRepos([])
+
+      // Add to search history (merge preserving order, up to 5)
+      setSearchHistory((prev) => {
+        const merged = [...usernames, ...prev].map((s) => s.trim()).filter(Boolean)
+        const unique = Array.from(new Set(merged)).slice(0, 5)
+        localStorage.setItem('search_history', JSON.stringify(unique))
+        return unique
+      })
+    } catch (err: unknown) {
+      setError(getErrorMessage(err))
+    } finally {
+      setLoading(false)
+      setLoadingMessage('')
+    }
+  }, [patToken, disableToken, updateRateLimit])
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    fetchUserData(searchQuery)
+    const raw = searchQuery.trim()
+    if (!raw) return
+    // split by commas or whitespace, allow up to 5 usernames
+    const candidates = raw.split(/[,\s]+/).filter(Boolean).slice(0, 5)
+    if (candidates.length > 1) {
+      fetchMultipleUsers(candidates)
+    } else {
+      // If single token, perform a search for matching usernames and show list
+      searchUsersByLogin(candidates[0])
+    }
   }
+  
+  // Search GitHub users by login substring and show list (max 5)
+  const searchUsersByLogin = useCallback(async (query: string) => {
+    if (!query.trim()) return
+    setLoading(true)
+    setError(null)
+    setLoadingMessage(`Mencari pengguna "${query}"...`)
+
+    const headers: Record<string, string> = { Accept: 'application/vnd.github.v3+json' }
+    if (patToken) headers['Authorization'] = `token ${patToken}`
+
+    try {
+      // search users by login
+      const q = encodeURIComponent(`${query} in:login`)
+      const res = await fetch(`https://api.github.com/search/users?q=${q}&per_page=5`, { headers })
+      updateRateLimit(res.headers)
+      if (!res.ok) {
+        if (res.status === 401) {
+          disableToken('Token Personal Access Anda tidak valid atau kedaluwarsa. Silakan masukkan token GitHub PAT yang valid.')
+          throw new Error('Token tidak valid')
+        }
+        if (res.status === 403) throw new Error('Batas API GitHub terlampaui. Gunakan PAT.')
+        throw new Error(`Gagal mencari pengguna (Status ${res.status})`)
+      }
+
+      const data = await res.json()
+      const items: Partial<GitHubUser>[] = Array.isArray(data.items) ? data.items.slice(0, 5) : []
+      setSearchResults(items)
+      // clear any active user(s)
+      setActiveUser(null)
+      setActiveUsers([])
+      setActiveRepos([])
+      setActiveUsersRepos({})
+    } catch (err: unknown) {
+      setError(getErrorMessage(err))
+    } finally {
+      setLoading(false)
+      setLoadingMessage('')
+    }
+  }, [patToken, disableToken, updateRateLimit])
 
   const handlePresetClick = (username: string) => {
     setSearchQuery(username)
@@ -358,7 +483,7 @@ function App() {
         {activeTab === 'explore' ? (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Left Column: Search & Presets */}
-            <div className="lg:col-span-4 space-y-6">
+            <div className={(activeUser || activeUsers.length === 1) ? 'lg:col-span-12 space-y-6' : 'lg:col-span-4 space-y-6'}>
               {/* Search Form */}
               <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm space-y-4">
                 <h3 className="font-bold text-base text-zinc-900 dark:text-white">
@@ -436,11 +561,12 @@ function App() {
                     </div>
                   </div>
                 )}
+
               </div>
             </div>
 
             {/* Right Column: User Results & Dashboard */}
-            <div className="lg:col-span-8 space-y-6 overflow-hidden">
+            <div className={`${activeUser || activeUsers.length === 1 ? 'lg:col-span-12' : 'lg:col-span-8'} space-y-6 overflow-hidden`}>
               {loading && (
                 <div className="space-y-6">
                   <div role="status" aria-live="polite" className="rounded-2xl border border-violet-200 bg-violet-50 p-4 text-sm font-medium text-violet-700 dark:border-violet-900/40 dark:bg-violet-950/20 dark:text-violet-300">
@@ -473,6 +599,24 @@ function App() {
                   <div>
                     <h4 className="font-bold text-sm">Gagal Memuat Profil</h4>
                     <p className="text-xs mt-0.5 leading-relaxed">{error}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Multi-user results */}
+              {!loading && !error && activeUsers.length > 0 && (
+                <div className="space-y-6">
+                  <h3 className="font-bold text-base text-zinc-900 dark:text-white">Hasil Pencarian (Beberapa Pengguna)</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {activeUsers.map((u) => (
+                      <div key={u.login} className="space-y-4">
+                        <UserProfile user={u} />
+                        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4">
+                          <h4 className="text-sm font-bold mb-2">Repositories {`(${(activeUsersRepos[u.login] || []).length})`}</h4>
+                          <RepoList repos={activeUsersRepos[u.login] || []} />
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
@@ -518,8 +662,8 @@ function App() {
               )}
 
               {!loading && !error && !activeUser && (
-                <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-center p-6">
-                  <div className="rounded-full bg-violet-50 dark:bg-violet-950/20 p-4 text-violet-600 dark:text-violet-400">
+                <div className="flex flex-col items-stretch justify-center py-20 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-center p-6">
+                  <div className="mx-auto rounded-full bg-violet-50 dark:bg-violet-950/20 p-4 text-violet-600 dark:text-violet-400">
                     <Compass className="h-10 w-10 animate-spin-slow" />
                   </div>
                   <h3 className="mt-4 text-lg font-bold text-zinc-900 dark:text-white">
@@ -528,6 +672,70 @@ function App() {
                   <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto">
                     Cari username akun GitHub di panel kiri atau klik saran cepat untuk melihat analisis profil.
                   </p>
+
+                  {searchResults.length > 0 ? (
+                    <div className="mt-6 text-left">
+                      <div className="flex items-center justify-between gap-3 mb-3">
+                        <div>
+                          <p className="text-sm font-semibold text-zinc-900 dark:text-white">Hasil Pencarian</p>
+                          <p className="text-xs text-zinc-500 dark:text-zinc-400">Pilih sampai 5 username untuk dimuat bersama.</p>
+                        </div>
+                        <span className="text-xs text-zinc-500 dark:text-zinc-400">Dipilih: {selectedResults.length}</span>
+                      </div>
+                      <div className="grid gap-3">
+                        {searchResults.map((u) => (
+                          u && u.login ? (
+                            <div key={u.login} className="flex items-center justify-between gap-3 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-3 bg-zinc-50 dark:bg-zinc-950">
+                              <button
+                                type="button"
+                                onClick={() => fetchUserData(u.login!)}
+                                className="flex items-center gap-3 text-left flex-1"
+                              >
+                                <img src={u.avatar_url} alt={u.login} className="h-10 w-10 rounded-full" />
+                                <div>
+                                  <p className="font-semibold text-zinc-900 dark:text-white">{u.login}</p>
+                                  {u.html_url && <p className="text-xs text-zinc-500 dark:text-zinc-400">{u.html_url}</p>}
+                                </div>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSelectedResults((prev) => {
+                                    const exists = prev.includes(u.login!)
+                                    let next = exists ? prev.filter((p) => p !== u.login) : [...prev, u.login!]
+                                    if (next.length > 5) next = next.slice(0, 5)
+                                    return next
+                                  })
+                                }}
+                                aria-pressed={selectedResults.includes(u.login!)}
+                                className={`text-xs px-2.5 py-1 rounded-lg font-semibold ${selectedResults.includes(u.login!) ? 'bg-violet-600 text-white' : 'bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-800'}`}
+                              >
+                                {selectedResults.includes(u.login!) ? 'Dipilih' : 'Pilih'}
+                              </button>
+                            </div>
+                          ) : null
+                        ))}
+                      </div>
+                      <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <button
+                          type="button"
+                          disabled={selectedResults.length === 0}
+                          onClick={() => fetchMultipleUsers(selectedResults)}
+                          className="w-full sm:w-auto text-xs font-semibold px-3 py-2 rounded-lg bg-violet-600 text-white hover:bg-violet-700 disabled:opacity-50"
+                        >
+                          Muat pengguna yang dipilih
+                        </button>
+                        <button
+                          type="button"
+                          disabled={selectedResults.length === 0}
+                          onClick={() => setSelectedResults([])}
+                          className="w-full sm:w-auto text-xs px-3 py-2 rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-200 disabled:opacity-50"
+                        >
+                          Bersihkan pilihan
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
               )}
             </div>
