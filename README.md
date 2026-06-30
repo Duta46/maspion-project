@@ -1,12 +1,12 @@
 ﻿# Maspion GitHub Explorer
 
-Aplikasi web sederhana untuk melihat profil GitHub developer, cek repositori, dan membandingkan dua akun secara langsung.
+Maspion GitHub Explorer adalah aplikasi web sederhana yang membantu kamu melihat profil GitHub developer, mengecek repositori, dan membandingkan dua akun secara langsung dari satu halaman.
 
 ## Fitur utama
 
 - Cari pengguna GitHub berdasarkan username
 - Lihat profil lengkap, avatar, bio, jumlah follower, dan daftar repositori
-- Filter dan urutkan repositori berdasarkan bahasa, bintang, fork, atau terakhir diperbarui
+- Filter dan urutkan repositori berdasarkan bahasa, jumlah bintang, fork, atau terakhir diperbarui
 - Lihat statistik ringkas seperti total bintang, fork, dan bahasa yang paling sering dipakai
 - Bandingkan dua developer secara berdampingan
 - Pilih mode gelap atau terang dan simpan preferensi di browser
@@ -40,13 +40,13 @@ npm run dev
 http://localhost:5173
 ```
 
-4. Kalau mau build untuk production:
+4. Kalau ingin build untuk production:
 
 ```bash
 npm run build
 ```
 
-5. Kalau mau lihat hasil build lokal:
+5. Kalau ingin melihat hasil build secara lokal:
 
 ```bash
 npm run preview
@@ -77,7 +77,7 @@ src/
 - Lucide React
 - GitHub REST API
 
-## Tips saat pakai demo
+## Tips saat memakai demo
 
 - Fokus ke alur pencarian profil dan tampilan repositori
 - Coba fitur perbandingan dua developer sekaligus
@@ -109,7 +109,7 @@ Tanpa token, GitHub API biasanya memberi batas sekitar 60 request per jam. Kalau
 
 ## Cara membuat PAT GitHub (opsional)
 
-Kalau mau menambah batas API, kamu bisa bikin token dari akun GitHub.
+Kalau ingin menambah batas API, kamu bisa membuat token dari akun GitHub.
 
 1. Masuk ke GitHub
 2. Buka menu profil lalu pilih Settings
@@ -117,8 +117,8 @@ Kalau mau menambah batas API, kamu bisa bikin token dari akun GitHub.
 4. Pilih Personal access tokens
 5. Klik Generate new token
 6. Isi note dan pilih masa berlaku token
-7. Kalau cuma butuh data publik, biasanya tidak perlu memberi scope tambahan
+7. Kalau hanya butuh data publik, biasanya tidak perlu memberi scope tambahan
 8. Salin token dan tempelkan di aplikasi
 
-> Jangan pernah menyimpan token di repo atau membagikannya ke orang lain.
+> Jangan pernah menyimpan token di repository atau membagikannya ke orang lain.
 
