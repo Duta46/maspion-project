@@ -46,13 +46,32 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [tokenInput, setTokenInput] = useState(patToken)
   const [isSaved, setIsSaved] = useState(false)
   const inputRef = React.useRef<HTMLInputElement>(null)
+  const toggleRef = React.useRef<HTMLButtonElement>(null)
 
   // Autofocus input field when it becomes visible
   React.useEffect(() => {
     if (showInput && inputRef.current) {
       inputRef.current.focus()
     }
+    if (!showInput && toggleRef.current) {
+      // return focus to the toggle button when popup closes
+      try {
+        toggleRef.current.focus()
+      } catch (e) {
+        /* ignore */
+      }
+    }
   }, [showInput])
+
+  // Global Escape handler when popup is open
+  React.useEffect(() => {
+    if (!showInput) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onShowInputToggle(false)
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [showInput, onShowInputToggle])
 
   // Sync internal state if token is changed or cleared externally (e.g. on 401 invalidation)
   React.useEffect(() => {
@@ -121,6 +140,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                     onShowInputToggle(false)
                   }
                 }}
+                id="pat-popup"
+                role="dialog"
+                aria-modal="false"
+                aria-label="Personal Access Token"
                 className="absolute inset-x-4 top-full z-10 mt-2 flex w-full max-w-[calc(100vw-2rem)] items-center gap-2 rounded-lg border border-zinc-200 hover:border-zinc-300 bg-white p-1.5 shadow-lg dark:border-zinc-800 dark:hover:border-zinc-700 dark:bg-zinc-900 transition-all animate-in fade-in slide-in-from-top-2 duration-200 sm:inset-auto sm:right-0 sm:top-full sm:mt-2 sm:w-auto sm:max-w-xs"
               >
                 <input
@@ -128,8 +151,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                   type="password"
                   value={tokenInput}
                   onChange={(e) => setTokenInput(e.target.value)}
-                  placeholder="Paste GitHub PAT token..."
-                  aria-label="GitHub Personal Access Token"
+                  placeholder="Tempel token PAT GitHub..."
+                  aria-label="Token Akses Pribadi GitHub"
                   className="flex-1 min-w-0 bg-transparent px-2.5 py-1 text-xs text-zinc-900 focus:outline-none dark:text-white"
                 />
                 <button
@@ -151,7 +174,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             ) : null}
 
             <button
+              ref={toggleRef}
               onClick={() => onShowInputToggle(!showInput)}
+              aria-expanded={showInput}
+              aria-haspopup="dialog"
+              aria-controls="pat-popup"
               className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ${
                 patToken
                   ? 'bg-violet-50 text-violet-700 dark:bg-violet-950/30 dark:text-violet-300 border border-violet-200 dark:border-violet-800/50'

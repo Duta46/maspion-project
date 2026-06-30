@@ -1,16 +1,16 @@
 ﻿# Maspion GitHub Explorer
 
-Aplikasi web untuk mencari dan membandingkan profil GitHub developer. Ideal untuk demo internal dan presentasi uji teknis di Perusahaan Maspion.
+Aplikasi web untuk mencari dan membandingkan profil GitHub developer.
 
 ## Fitur Utama
 
-- Cari user GitHub dengan username
-- Lihat profil lengkap, avatar, bio, statistik followers, dan repositori
-- Filter dan sortir repositori berdasarkan bahasa, stars, forks, atau update terbaru
-- Dashboard statistik untuk melihat total stars, forks, dan top bahasa
-- Bandingkan dua developer secara berdampingan
-- Dark / Light mode dengan preferensi tersimpan
-- Input GitHub PAT untuk meningkatkan rate limit
+- Mencari pengguna GitHub berdasarkan username
+- Menampilkan profil lengkap, avatar, bio, statistik pengikut, dan daftar repositori
+- Memfilter dan mengurutkan repositori berdasarkan bahasa, bintang (stars), forks, atau pembaruan terakhir
+- Dashboard statistik untuk melihat total bintang, forks, dan bahasa teratas
+- Membandingkan dua developer secara berdampingan (side-by-side)
+- Mode Gelap / Terang dengan preferensi tersimpan pada browser
+- Dukungan GitHub Personal Access Token (PAT) untuk meningkatkan batas rate API
 
 ## Demo Langsung
 
@@ -79,20 +79,20 @@ src/
 
 ## Catatan Demo
 
-- Fokus pada alur pencarian profil dan repositori
-- Tampilkan fungsi perbandingan dua developer
-- Jelaskan penggunaan PAT untuk rate limit
-- Gunakan fitur filter dan sort sebagai nilai tambah
+- Fokus pada alur pencarian profil dan tampilan repositori
+- Tunjukkan fitur perbandingan dua developer secara bersamaan
+- Jelaskan cara kerja Personal Access Token (PAT) untuk menambah limit API
+- Sorot fitur filter dan pengurutan sebagai nilai tambah untuk analisis kode
 
-## Handling Error
+## Penanganan Error
 
-Aplikasi menampilkan pesan error yang jelas ketika terjadi masalah berikut:
+Aplikasi menampilkan pesan kesalahan yang jelas ketika terjadi kondisi berikut:
 
-- Username tidak ditemukan → tampilkan instruksi cek kembali input
-- Rate limit habis → minta pengguna memasukkan PAT GitHub
-- PAT tidak valid atau kadaluarsa → informasikan token perlu diganti
-- Koneksi jaringan bermasalah → minta pengguna cek koneksi internet
-- Gagal memuat data repositori → beri pilihan ulangi pencarian
+- Username tidak ditemukan → tampilkan instruksi untuk memeriksa kembali input
+- Batas rate API habis → arahkan pengguna untuk memasukkan GitHub PAT
+- PAT tidak valid atau kedaluwarsa → informasikan pengguna agar mengganti token
+- Gangguan koneksi jaringan → instruksikan pengguna untuk memeriksa koneksi internet
+- Gagal memuat data repositori → berikan opsi untuk mengulangi pencarian
 
 ## Script yang Tersedia
 

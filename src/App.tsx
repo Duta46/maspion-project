@@ -266,11 +266,11 @@ function App() {
       const userData: GitHubUser = await userRes.json()
 
       // 2. Fetch User Repos
-      setLoadingMessage(`Loading repositories for ${username.trim()}...`)
+      setLoadingMessage(`Memuat repositori untuk ${username.trim()}...`)
       const reposData = await fetchAllRepos(
         username.trim(),
         headers,
-        (loadedCount) => setLoadingMessage(`Loaded ${loadedCount} repositories...`),
+        (loadedCount) => setLoadingMessage(`Memuat ${loadedCount} repositori...`),
         updateRateLimit
       )
 
@@ -366,14 +366,16 @@ function App() {
                 </h3>
                 <form onSubmit={handleSearchSubmit} className="relative">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
-                  <input
-                    ref={searchInputRef}
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Masukkan username GitHub..."
-                    className="w-full pl-10 pr-12 py-2.5 text-sm border border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700 rounded-lg bg-zinc-50 focus:bg-white dark:bg-zinc-950 dark:focus:bg-zinc-950 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all dark:text-white"
-                  />
+                    <label htmlFor="search-input" className="sr-only">Cari pengguna GitHub</label>
+                    <input
+                      id="search-input"
+                      ref={searchInputRef}
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Masukkan username GitHub..."
+                      className="w-full pl-10 pr-12 py-2.5 text-sm border border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700 rounded-lg bg-zinc-50 focus:bg-white dark:bg-zinc-950 dark:focus:bg-zinc-950 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all dark:text-white"
+                    />
                   <div className="absolute right-10 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
                     <kbd className="hidden sm:inline-flex h-5 select-none items-center gap-0.5 rounded border border-zinc-200 bg-zinc-100 px-1.5 font-mono text-[9px] font-medium text-zinc-400 dark:border-zinc-800/60 dark:bg-zinc-900">
                       <span>⌘</span>K
@@ -441,7 +443,7 @@ function App() {
             <div className="lg:col-span-8 space-y-6 overflow-hidden">
               {loading && (
                 <div className="space-y-6">
-                  <div className="rounded-2xl border border-violet-200 bg-violet-50 p-4 text-sm font-medium text-violet-700 dark:border-violet-900/40 dark:bg-violet-950/20 dark:text-violet-300">
+                  <div role="status" aria-live="polite" className="rounded-2xl border border-violet-200 bg-violet-50 p-4 text-sm font-medium text-violet-700 dark:border-violet-900/40 dark:bg-violet-950/20 dark:text-violet-300">
                     {loadingMessage || 'Memuat data GitHub...'}
                   </div>
                   <ProfileSkeleton />
@@ -450,7 +452,7 @@ function App() {
               )}
 
               {tokenNotice && !loading && (
-                <div className="flex items-center justify-between gap-3 rounded-2xl border border-violet-200 bg-violet-50 p-4 text-sm text-violet-700 dark:border-violet-900/40 dark:bg-violet-950/20 dark:text-violet-300">
+                <div role="status" aria-live="polite" className="flex items-center justify-between gap-3 rounded-2xl border border-violet-200 bg-violet-50 p-4 text-sm text-violet-700 dark:border-violet-900/40 dark:bg-violet-950/20 dark:text-violet-300">
                   <div className="flex items-center gap-2">
                     <KeyRound className="h-4 w-4 shrink-0" />
                     <span>{tokenNotice}</span>
@@ -466,7 +468,7 @@ function App() {
               )}
 
               {error && (
-                <div className="flex items-center gap-3 p-5 border border-red-200 bg-red-50 text-red-700 rounded-2xl dark:border-red-900/30 dark:bg-red-950/20 dark:text-red-400">
+                <div role="alert" aria-live="assertive" className="flex items-center gap-3 p-5 border border-red-200 bg-red-50 text-red-700 rounded-2xl dark:border-red-900/30 dark:bg-red-950/20 dark:text-red-400">
                   <ShieldAlert className="h-6 w-6 shrink-0" />
                   <div>
                     <h4 className="font-bold text-sm">Gagal Memuat Profil</h4>

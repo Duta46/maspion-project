@@ -57,7 +57,7 @@ export const CompareDevelopers: React.FC<CompareDevelopersProps> = ({
 
       const repos: GitHubRepo[] = await reposRes.json()
       allRepos.push(...repos)
-      setLoadingMessage(`Loaded ${allRepos.length} repositories for ${username}...`)
+      setLoadingMessage(`Memuat ${allRepos.length} repositori untuk ${username}...`)
 
       if (repos.length < 100) break
       page += 1
@@ -193,7 +193,9 @@ export const CompareDevelopers: React.FC<CompareDevelopersProps> = ({
           {/* Dev A Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+            <label htmlFor="compare-a-input" className="sr-only">Masukkan username Developer A</label>
             <input
+              id="compare-a-input"
               type="text"
               placeholder="Masukkan username Developer A..."
               value={userAQuery}
@@ -205,7 +207,9 @@ export const CompareDevelopers: React.FC<CompareDevelopersProps> = ({
           {/* Dev B Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+            <label htmlFor="compare-b-input" className="sr-only">Masukkan username Developer B</label>
             <input
+              id="compare-b-input"
               type="text"
               placeholder="Masukkan username Developer B..."
               value={userBQuery}
@@ -234,14 +238,14 @@ export const CompareDevelopers: React.FC<CompareDevelopersProps> = ({
       </form>
 
       {loading && loadingMessage && (
-        <div className="rounded-lg border border-violet-200 bg-violet-50 p-3 text-center text-sm font-medium text-violet-700 dark:border-violet-900/40 dark:bg-violet-950/20 dark:text-violet-300">
+        <div role="status" aria-live="polite" className="rounded-lg border border-violet-200 bg-violet-50 p-3 text-center text-sm font-medium text-violet-700 dark:border-violet-900/40 dark:bg-violet-950/20 dark:text-violet-300">
           {loadingMessage}
         </div>
       )}
 
       {/* Error View */}
       {error && (
-        <div className="flex items-center gap-3 p-4 border border-red-200 bg-red-50 text-red-700 rounded-lg dark:border-red-900/30 dark:bg-red-950/20 dark:text-red-400">
+        <div role="alert" aria-live="assertive" className="flex items-center gap-3 p-4 border border-red-200 bg-red-50 text-red-700 rounded-lg dark:border-red-900/30 dark:bg-red-950/20 dark:text-red-400">
           <ShieldAlert className="h-5 w-5 shrink-0" />
           <p className="text-sm font-medium">{error}</p>
         </div>

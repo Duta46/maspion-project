@@ -96,7 +96,9 @@ export const RepoList: React.FC<RepoListProps> = ({ repos }) => {
         {/* Search */}
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+          <label htmlFor="repo-search" className="sr-only">Cari repositori</label>
           <input
+            id="repo-search"
             type="text"
             placeholder="Cari repositori..."
             value={searchTerm}
@@ -198,9 +200,9 @@ export const RepoList: React.FC<RepoListProps> = ({ repos }) => {
       ) : (
         <div className="flex flex-col items-center justify-center py-12 px-4 border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl bg-zinc-50/50 dark:bg-zinc-900/10">
           <HelpCircle className="h-10 w-10 text-zinc-300 dark:text-zinc-700" />
-          <h3 className="mt-4 text-sm font-semibold text-zinc-900 dark:text-white">No repositories found</h3>
+          <h3 className="mt-4 text-sm font-semibold text-zinc-900 dark:text-white">Tidak ada repositori ditemukan</h3>
           <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400 text-center">
-            Try adjusting your search query or language filter.
+            Coba ubah kata kunci pencarian atau filter bahasa.
           </p>
         </div>
       )}
