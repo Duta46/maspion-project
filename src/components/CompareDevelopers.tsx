@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Search, Trophy, ShieldAlert, Briefcase, MapPin, Loader2, X } from 'lucide-react'
+import { Search, Trophy, ShieldAlert, Briefcase, MapPin, Loader2 } from 'lucide-react'
 import type { GitHubUser } from './UserProfile'
 import type { GitHubRepo } from './RepoList'
 
