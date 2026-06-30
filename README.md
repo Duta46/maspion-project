@@ -84,6 +84,16 @@ src/
 - Jelaskan penggunaan PAT untuk rate limit
 - Gunakan fitur filter dan sort sebagai nilai tambah
 
+## Handling Error
+
+Aplikasi menampilkan pesan error yang jelas ketika terjadi masalah berikut:
+
+- Username tidak ditemukan → tampilkan instruksi cek kembali input
+- Rate limit habis → minta pengguna memasukkan PAT GitHub
+- PAT tidak valid atau kadaluarsa → informasikan token perlu diganti
+- Koneksi jaringan bermasalah → minta pengguna cek koneksi internet
+- Gagal memuat data repositori → beri pilihan ulangi pencarian
+
 ## Script yang Tersedia
 
 - `npm run dev` — jalankan development server

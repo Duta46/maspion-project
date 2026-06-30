@@ -10,7 +10,7 @@ interface CompareDevelopersProps {
 }
 
 const getErrorMessage = (err: unknown) => {
-  return err instanceof Error ? err.message : 'An error occurred during comparison'
+  return err instanceof Error ? err.message : 'Terjadi kesalahan saat membandingkan.'
 }
 
 export const CompareDevelopers: React.FC<CompareDevelopersProps> = ({
@@ -47,12 +47,12 @@ export const CompareDevelopers: React.FC<CompareDevelopersProps> = ({
       if (!reposRes.ok) {
         if (reposRes.status === 401) {
           onInvalidToken?.()
-          throw new Error('Your GitHub Personal Access Token is invalid or expired. Please set a valid PAT token.')
+          throw new Error('Token Personal Access GitHub Anda tidak valid atau kedaluwarsa. Silakan setel token PAT yang valid.')
         }
         if (reposRes.status === 403) {
-          throw new Error('GitHub API rate limit is exhausted. Add a valid PAT token or wait until the rate limit resets.')
+          throw new Error('Batas rate API GitHub telah habis. Tambahkan token PAT yang valid atau tunggu sampai batas direset.')
         }
-        throw new Error(`Failed to fetch repositories for "${username}" (Status ${reposRes.status})`)
+        throw new Error(`Gagal mengambil repositori untuk "${username}" (Status ${reposRes.status})`)
       }
 
       const repos: GitHubRepo[] = await reposRes.json()
@@ -68,26 +68,26 @@ export const CompareDevelopers: React.FC<CompareDevelopersProps> = ({
 
   const fetchDevData = async (username: string) => {
     // Fetch profile
-    setLoadingMessage(`Loading profile for ${username}...`)
+    setLoadingMessage(`Memuat profil ${username}...`)
     const userRes = await fetch(`https://api.github.com/users/${username}`, { headers })
     onRateLimitUpdate?.(userRes.headers)
     if (!userRes.ok) {
       if (userRes.status === 401) {
         onInvalidToken?.()
-        throw new Error('Your GitHub Personal Access Token is invalid or expired. Please set a valid PAT token.')
+        throw new Error('Token Personal Access GitHub Anda tidak valid atau kedaluwarsa. Silakan setel token PAT yang valid.')
       }
       if (userRes.status === 403) {
-        throw new Error('GitHub API rate limit is exhausted. Add a valid PAT token or wait until the rate limit resets.')
+        throw new Error('Batas rate API GitHub telah habis. Tambahkan token PAT yang valid atau tunggu sampai batas direset.')
       }
       if (userRes.status === 404) {
-        throw new Error(`User "${username}" not found`)
+        throw new Error(`Pengguna "${username}" tidak ditemukan`)
       }
-      throw new Error(`Failed to fetch user "${username}" (Status ${userRes.status})`)
+      throw new Error(`Gagal mengambil pengguna "${username}" (Status ${userRes.status})`)
     }
     const user: GitHubUser = await userRes.json()
 
     // Fetch repos
-    setLoadingMessage(`Loading repositories for ${username}...`)
+    setLoadingMessage(`Memuat repositori ${username}...`)
     const repos = await fetchAllRepos(username)
 
     return { user, repos }
@@ -96,12 +96,12 @@ export const CompareDevelopers: React.FC<CompareDevelopersProps> = ({
   const handleCompare = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!userAQuery.trim() || !userBQuery.trim()) {
-      setError('Please enter username for both Developer A and Developer B')
+      setError('Silakan masukkan username untuk kedua Developer A dan Developer B')
       return
     }
 
     setLoading(true)
-    setLoadingMessage('Preparing comparison...')
+    setLoadingMessage('Menyiapkan perbandingan...')
     setError(null)
 
     try {
@@ -141,7 +141,7 @@ export const CompareDevelopers: React.FC<CompareDevelopersProps> = ({
     const isWinnerB = valB > valA
 
     return (
-      <div className="grid grid-cols-3 py-3.5 border-b border-zinc-100 dark:border-zinc-800 text-sm items-center">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 py-3.5 border-b border-zinc-100 dark:border-zinc-800 text-sm items-center">
         {/* Dev A Value */}
         <div className="text-center font-bold">
           <span
@@ -195,10 +195,10 @@ export const CompareDevelopers: React.FC<CompareDevelopersProps> = ({
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
             <input
               type="text"
-              placeholder="Enter Developer A username..."
+              placeholder="Masukkan username Developer A..."
               value={userAQuery}
               onChange={(e) => setUserAQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-sm border border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700 rounded-lg bg-zinc-50 focus:bg-white dark:bg-zinc-950 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all dark:text-white"
+              className="w-full pl-10 pr-4 py-2.5 text-sm border border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700 rounded-lg bg-zinc-50 focus:bg-white dark:bg-zinc-950 dark:focus:bg-zinc-950 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all dark:text-white"
             />
           </div>
 
@@ -207,10 +207,10 @@ export const CompareDevelopers: React.FC<CompareDevelopersProps> = ({
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
             <input
               type="text"
-              placeholder="Enter Developer B username..."
+              placeholder="Masukkan username Developer B..."
               value={userBQuery}
               onChange={(e) => setUserBQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-sm border border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700 rounded-lg bg-zinc-50 focus:bg-white dark:bg-zinc-950 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all dark:text-white"
+              className="w-full pl-10 pr-4 py-2.5 text-sm border border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700 rounded-lg bg-zinc-50 focus:bg-white dark:bg-zinc-950 dark:focus:bg-zinc-950 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all dark:text-white"
             />
           </div>
         </div>
@@ -224,10 +224,10 @@ export const CompareDevelopers: React.FC<CompareDevelopersProps> = ({
             {loading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Comparing...
+                Membandingkan...
               </>
             ) : (
-              'Compare Profiles'
+              'Bandingkan Profil'
             )}
           </button>
         </div>
@@ -251,7 +251,7 @@ export const CompareDevelopers: React.FC<CompareDevelopersProps> = ({
       {devA && devB && (
         <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm overflow-hidden animate-in fade-in zoom-in-95 duration-300">
           {/* Header Row (Profile Cards side by side) */}
-          <div className="grid grid-cols-3 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 py-6 px-4 items-center">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 py-6 px-4 items-center">
             {/* Dev A Profile */}
             <div className="text-center flex flex-col items-center">
               <img
@@ -301,7 +301,7 @@ export const CompareDevelopers: React.FC<CompareDevelopersProps> = ({
           {/* Comparison Stats Table */}
           <div className="px-4 py-2">
             {renderComparisonRow('Followers', devA.user.followers, devB.user.followers)}
-            {renderComparisonRow('Total Stars', starsA, starsB)}
+            {renderComparisonRow('Total Bintang', starsA, starsB)}
             {renderComparisonRow('Total Forks', forksA, forksB)}
             {renderComparisonRow('Public Repos', devA.user.public_repos, devB.user.public_repos)}
             {renderComparisonRow('Public Gists', devA.user.public_gists, devB.user.public_gists)}
@@ -309,7 +309,7 @@ export const CompareDevelopers: React.FC<CompareDevelopersProps> = ({
           </div>
 
           {/* Meta Info Comparison */}
-          <div className="grid grid-cols-2 divide-x divide-zinc-100 dark:divide-zinc-800 border-t border-zinc-200 dark:border-zinc-800 text-xs text-zinc-500 dark:text-zinc-400 p-6 gap-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:divide-x divide-zinc-100 dark:divide-zinc-800 border-t border-zinc-200 dark:border-zinc-800 text-xs text-zinc-500 dark:text-zinc-400 p-6">
             {/* Dev A Bio Info */}
             <div className="space-y-2">
               {devA.user.company && (
@@ -327,7 +327,7 @@ export const CompareDevelopers: React.FC<CompareDevelopersProps> = ({
             </div>
 
             {/* Dev B Bio Info */}
-            <div className="space-y-2 pl-6">
+            <div className="space-y-2 sm:pl-6">
               {devB.user.company && (
                 <div className="flex items-center gap-2">
                   <Briefcase className="h-4 w-4 text-zinc-400" />

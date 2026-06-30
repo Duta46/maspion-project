@@ -89,24 +89,24 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ repos }) => {
     return (
       <div className="flex flex-col items-center justify-center py-12 px-4 border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl bg-zinc-50/50 dark:bg-zinc-900/10">
         <ShieldAlert className="h-10 w-10 text-zinc-300 dark:text-zinc-700" />
-        <h3 className="mt-4 text-sm font-semibold text-zinc-900 dark:text-white">No data for statistics</h3>
+        <h3 className="mt-4 text-sm font-semibold text-zinc-900 dark:text-white">Tidak ada data untuk statistik</h3>
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400 text-center">
-          This user does not have any repositories to generate dashboard metrics.
+          Pengguna ini tidak memiliki repositori untuk menghasilkan metrik dashboard.
         </p>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300 delay-100">
+    <div className="space-y-6 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300 delay-100">
       {/* Aggregates row */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {/* Total Stars Card */}
         <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
           <div className="flex justify-between items-start">
             <div>
               <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                Total Stars Received
+                Total Bintang Diterima
               </p>
               <h3 className="text-3xl font-extrabold text-zinc-900 dark:text-white mt-2">
                 {stats.totalStars.toLocaleString()}
@@ -123,7 +123,7 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ repos }) => {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                Total Forks Count
+                Total Forks
               </p>
               <h3 className="text-3xl font-extrabold text-zinc-900 dark:text-white mt-2">
                 {stats.totalForks.toLocaleString()}
@@ -135,12 +135,12 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ repos }) => {
           </div>
         </div>
 
-        {/* Average Repo Size Card */}
+        {/* Ukuran Repo Rata-rata */}
         <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
           <div className="flex justify-between items-start">
             <div>
               <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                Avg. Repo Size
+                Ukuran Repo Rata-rata
               </p>
               <h3 className="text-3xl font-extrabold text-zinc-900 dark:text-white mt-2">
                 {stats.avgSize >= 1024
@@ -161,7 +161,7 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ repos }) => {
         <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl shadow-sm">
           <div className="flex items-center gap-2 mb-4">
             <Code2 className="h-5 w-5 text-violet-600 dark:text-violet-400" />
-            <h4 className="font-bold text-zinc-900 dark:text-white text-base">Top Languages</h4>
+            <h4 className="font-bold text-zinc-900 dark:text-white text-base">Bahasa Teratas</h4>
           </div>
 
           <div className="space-y-4">
@@ -177,7 +177,7 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ repos }) => {
                       {lang.name}
                     </span>
                     <span className="text-zinc-500 dark:text-zinc-400 font-medium">
-                      {lang.count} {lang.count === 1 ? 'repo' : 'repos'} ({lang.percentage}%)
+                      {lang.count} repositori ({lang.percentage}%)
                     </span>
                   </div>
                   {/* Custom progress bar */}
@@ -193,7 +193,7 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ repos }) => {
                 </div>
               ))
             ) : (
-              <p className="text-sm text-zinc-400 italic">No language data available</p>
+              <p className="text-sm text-zinc-400 italic">Tidak ada data bahasa tersedia</p>
             )}
           </div>
         </div>
@@ -202,7 +202,7 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ repos }) => {
         <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl shadow-sm">
           <div className="flex items-center gap-2 mb-4">
             <Award className="h-5 w-5 text-violet-600 dark:text-violet-400" />
-            <h4 className="font-bold text-zinc-900 dark:text-white text-base">Top Starred Repositories</h4>
+            <h4 className="font-bold text-zinc-900 dark:text-white text-base">Repositori Paling Banyak Bintang</h4>
           </div>
 
           <div className="space-y-4">
@@ -239,13 +239,13 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ repos }) => {
       {stats.highestStarredRepo && (
         <div className="relative bg-gradient-to-r from-violet-600 to-indigo-700 text-white rounded-xl p-6 shadow-md overflow-hidden">
           {/* Decorative background */}
-          <div className="absolute right-0 bottom-0 opacity-10 translate-x-12 translate-y-12 select-none">
+          <div className="absolute right-0 bottom-0 opacity-10 translate-x-8 translate-y-8 sm:translate-x-12 sm:translate-y-12 select-none">
             <Star className="h-64 w-64 fill-white text-white" />
           </div>
 
           <div className="relative z-10 space-y-3">
             <span className="bg-white/20 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
-              Featured Repository
+              Repositori Unggulan
             </span>
             <div>
               <h4 className="text-xl font-bold">
@@ -259,7 +259,7 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ repos }) => {
                 </a>
               </h4>
               <p className="text-xs text-white/80 mt-1 line-clamp-2 max-w-xl">
-                {stats.highestStarredRepo.description || 'No description provided'}
+                {stats.highestStarredRepo.description || 'Deskripsi tidak tersedia'}
               </p>
             </div>
 

@@ -28,7 +28,7 @@ interface RateLimit {
 const PRESET_USERS = ['torvalds', 'gaearon', 'taylorotwell', 'yyx990803']
 
 const getErrorMessage = (err: unknown) => {
-  return err instanceof Error ? err.message : 'An unexpected network error occurred.'
+  return err instanceof Error ? err.message : 'Terjadi kesalahan jaringan yang tidak terduga.'
 }
 
 const readSearchHistory = () => {
@@ -62,12 +62,12 @@ const fetchAllRepos = async (
 
     if (!response.ok) {
       if (response.status === 401) {
-        throw new Error('Your GitHub Personal Access Token is invalid or expired. The token has been disabled. Please set a new PAT token.')
+        throw new Error('Token GitHub PAT Anda tidak valid atau kedaluwarsa. Token telah dinonaktifkan. Silakan masukkan token PAT baru.')
       }
       if (response.status === 403) {
-        throw new Error('GitHub API rate limit is exhausted. Add a valid PAT token or wait until the rate limit resets.')
+        throw new Error('Batas rate API GitHub telah habis. Tambahkan token PAT yang valid atau tunggu sampai batas direset.')
       }
-      throw new Error(`Failed to fetch repositories (Status ${response.status})`)
+      throw new Error(`Gagal mengambil repositori (Status ${response.status})`)
     }
 
     const repos: GitHubRepo[] = await response.json()
@@ -168,10 +168,10 @@ function App() {
     setPatToken(trimmedToken)
     if (trimmedToken) {
       localStorage.setItem('github_pat', trimmedToken)
-      setTokenNotice('PAT token saved. Future requests will use the higher GitHub API limit.')
+      setTokenNotice('Token PAT disimpan. Permintaan selanjutnya akan menggunakan batas API GitHub yang lebih tinggi.')
     } else {
       localStorage.removeItem('github_pat')
-      setTokenNotice('PAT token removed. Requests will use the public GitHub API limit.')
+      setTokenNotice('Token PAT dihapus. Permintaan akan menggunakan batas API GitHub publik.')
     }
   }, [])
 
@@ -208,7 +208,7 @@ function App() {
       const res = await fetch('https://api.github.com/rate_limit', { headers })
       if (res.status === 401) {
         // Token is invalid/expired
-        disableToken('Your saved GitHub Personal Access Token is invalid or expired. We disabled it. Please set a valid PAT token.')
+        disableToken('Token Personal Access GitHub yang disimpan tidak valid atau kedaluwarsa. Kami menonaktifkannya. Silakan masukkan token PAT yang valid.')
         return
       }
       if (res.ok) {
@@ -234,7 +234,7 @@ function App() {
     if (!username.trim()) return
 
     setLoading(true)
-    setLoadingMessage(`Loading profile for ${username.trim()}...`)
+    setLoadingMessage(`Memuat profil ${username.trim()}...`)
     setError(null)
 
     const headers: Record<string, string> = {
@@ -251,16 +251,16 @@ function App() {
 
       if (!userRes.ok) {
         if (userRes.status === 401) {
-          disableToken('Your Personal Access Token is invalid or expired. Please set a valid GitHub PAT token.')
-          throw new Error('Your Personal Access Token is invalid or expired. We have disabled it. Please set a valid GitHub PAT in the settings above.')
+          disableToken('Token Personal Access Anda tidak valid atau kedaluwarsa. Silakan masukkan token GitHub PAT yang valid.')
+          throw new Error('Token Personal Access Anda tidak valid atau kedaluwarsa. Kami telah menonaktifkannya. Silakan masukkan token GitHub PAT yang valid di pengaturan.')
         }
         if (userRes.status === 404) {
-          throw new Error(`GitHub user "${username}" was not found. Please verify the name.`)
+          throw new Error(`Pengguna GitHub "${username}" tidak ditemukan. Periksa kembali nama yang dimasukkan.`)
         }
         if (userRes.status === 403) {
-          throw new Error('API Rate Limit exceeded. Please add a Personal Access Token (PAT) in the settings.')
+          throw new Error('Batas API telah terlampaui. Silakan tambahkan Personal Access Token (PAT) di pengaturan.')
         }
-        throw new Error(`API error (Status ${userRes.status})`)
+        throw new Error(`Kesalahan API (Status ${userRes.status})`)
       }
 
       const userData: GitHubUser = await userRes.json()
@@ -312,7 +312,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50 transition-colors duration-300 flex flex-col font-sans">
+    <div className="min-h-screen w-full overflow-x-hidden bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50 transition-colors duration-300 flex flex-col font-sans">
       {/* Navbar */}
       <Navbar
         patToken={patToken}
@@ -328,7 +328,7 @@ function App() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* Navigation Tabs */}
         <div className="flex justify-center border-b border-zinc-200 dark:border-zinc-800">
-          <nav className="flex space-x-8" aria-label="Tabs">
+          <nav className="flex flex-wrap justify-center gap-4 py-2" aria-label="Tabs">
             <button
               onClick={() => setActiveTab('explore')}
               className={`flex items-center gap-2 py-4 px-1 border-b-2 font-bold text-sm transition-all ${
@@ -338,7 +338,7 @@ function App() {
               }`}
             >
               <Compass className="h-4 w-4" />
-              Profile Explorer
+              Jelajah Profil
             </button>
             <button
               onClick={() => setActiveTab('compare')}
@@ -349,7 +349,7 @@ function App() {
               }`}
             >
               <Users2 className="h-4 w-4" />
-              Developer Compare (VS)
+              Bandingkan Developer
             </button>
           </nav>
         </div>
@@ -362,7 +362,7 @@ function App() {
               {/* Search Form */}
               <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm space-y-4">
                 <h3 className="font-bold text-base text-zinc-900 dark:text-white">
-                  Find Developer
+                  Cari Developer
                 </h3>
                 <form onSubmit={handleSearchSubmit} className="relative">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
@@ -371,8 +371,8 @@ function App() {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Enter GitHub username..."
-                    className="w-full pl-10 pr-12 py-2.5 text-sm border border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700 rounded-lg bg-zinc-50 focus:bg-white dark:bg-zinc-950 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all dark:text-white"
+                    placeholder="Masukkan username GitHub..."
+                    className="w-full pl-10 pr-12 py-2.5 text-sm border border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700 rounded-lg bg-zinc-50 focus:bg-white dark:bg-zinc-950 dark:focus:bg-zinc-950 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all dark:text-white"
                   />
                   <div className="absolute right-10 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
                     <kbd className="hidden sm:inline-flex h-5 select-none items-center gap-0.5 rounded border border-zinc-200 bg-zinc-100 px-1.5 font-mono text-[9px] font-medium text-zinc-400 dark:border-zinc-800/60 dark:bg-zinc-900">
@@ -384,14 +384,14 @@ function App() {
                     disabled={loading}
                     className="absolute right-2 top-1/2 -translate-y-1/2 bg-violet-600 hover:bg-violet-700 text-white rounded px-2 py-1 text-xs font-medium disabled:opacity-50 transition-colors cursor-pointer"
                   >
-                    Go
+                    Cari
                   </button>
                 </form>
 
                 {/* Presets */}
                 <div className="space-y-2">
                   <span className="text-xs font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
-                    Quick Suggestions
+                    Saran Cepat
                   </span>
                   <div className="flex flex-wrap gap-2">
                     {PRESET_USERS.map((username) => (
@@ -412,7 +412,7 @@ function App() {
                   <div className="space-y-2 pt-2 border-t border-zinc-100 dark:border-zinc-800/60">
                     <span className="text-xs font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider flex items-center gap-1">
                       <History className="h-3 w-3" />
-                      Recent Searches
+                      Pencarian Terakhir
                     </span>
                     <div className="space-y-1.5">
                       {searchHistory.map((username) => (
@@ -438,11 +438,11 @@ function App() {
             </div>
 
             {/* Right Column: User Results & Dashboard */}
-            <div className="lg:col-span-8 space-y-6">
+            <div className="lg:col-span-8 space-y-6 overflow-hidden">
               {loading && (
                 <div className="space-y-6">
                   <div className="rounded-2xl border border-violet-200 bg-violet-50 p-4 text-sm font-medium text-violet-700 dark:border-violet-900/40 dark:bg-violet-950/20 dark:text-violet-300">
-                    {loadingMessage || 'Loading GitHub data...'}
+                    {loadingMessage || 'Memuat data GitHub...'}
                   </div>
                   <ProfileSkeleton />
                   {exploreSubTab === 'repos' ? <RepoListSkeleton /> : null}
@@ -460,7 +460,7 @@ function App() {
                     onClick={() => setTokenNotice(null)}
                     className="rounded-lg px-2 py-1 text-xs font-semibold hover:bg-violet-100 dark:hover:bg-violet-900/30"
                   >
-                    Dismiss
+                    Tutup
                   </button>
                 </div>
               )}
@@ -469,7 +469,7 @@ function App() {
                 <div className="flex items-center gap-3 p-5 border border-red-200 bg-red-50 text-red-700 rounded-2xl dark:border-red-900/30 dark:bg-red-950/20 dark:text-red-400">
                   <ShieldAlert className="h-6 w-6 shrink-0" />
                   <div>
-                    <h4 className="font-bold text-sm">Failed to Fetch Profile</h4>
+                    <h4 className="font-bold text-sm">Gagal Memuat Profil</h4>
                     <p className="text-xs mt-0.5 leading-relaxed">{error}</p>
                   </div>
                 </div>
@@ -502,7 +502,7 @@ function App() {
                       }`}
                     >
                       <BarChart3 className="h-4 w-4" />
-                      Analytics Dashboard
+                      Dashboard Analitik
                     </button>
                   </div>
 
@@ -521,10 +521,10 @@ function App() {
                     <Compass className="h-10 w-10 animate-spin-slow" />
                   </div>
                   <h3 className="mt-4 text-lg font-bold text-zinc-900 dark:text-white">
-                    Start Exploring GitHub Accounts
+                    Mulai Menjelajah Akun GitHub
                   </h3>
                   <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto">
-                    Search for any GitHub account username on the left panel or click a preset suggestion to view profile analysis.
+                    Cari username akun GitHub di panel kiri atau klik saran cepat untuk melihat analisis profil.
                   </p>
                 </div>
               )}
@@ -535,7 +535,7 @@ function App() {
           <CompareDevelopers
             patToken={patToken}
             onRateLimitUpdate={updateRateLimit}
-            onInvalidToken={() => disableToken('Your Personal Access Token is invalid or expired. Please set a valid GitHub PAT token.')}
+            onInvalidToken={() => disableToken('Token Personal Access Anda tidak valid atau kedaluwarsa. Silakan setel token GitHub PAT yang valid.')}
           />
         )}
       </main>

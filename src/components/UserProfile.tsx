@@ -102,7 +102,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center rounded-lg bg-zinc-900 px-4 py-2 text-xs font-semibold text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 transition-colors mx-auto md:mx-0"
               >
-                View on GitHub
+                Lihat di GitHub
               </a>
             </div>
 
@@ -155,7 +155,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
               )}
               <div className="flex items-center justify-center md:justify-start gap-2 col-span-1 sm:col-span-2">
                 <Calendar className="h-4 w-4 shrink-0 text-zinc-400" />
-                <span>Joined GitHub on {formatDate(user.created_at)}</span>
+                <span>Bergabung di GitHub pada {formatDate(user.created_at)}</span>
               </div>
             </div>
           </div>
@@ -171,7 +171,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
               {user.public_repos}
             </div>
             <div className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mt-0.5">
-              Repositories
+              Repositori
             </div>
           </div>
 
@@ -183,7 +183,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
               {user.public_gists}
             </div>
             <div className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mt-0.5">
-              Gists
+              Gist
             </div>
           </div>
 
@@ -195,7 +195,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
               {user.followers}
             </div>
             <div className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mt-0.5">
-              Followers
+              Pengikut
             </div>
           </div>
 
@@ -207,7 +207,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
               {user.following}
             </div>
             <div className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mt-0.5">
-              Following
+              Mengikuti
             </div>
           </div>
         </div>

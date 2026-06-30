@@ -73,7 +73,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-zinc-200/80 bg-white/80 backdrop-blur-md dark:border-zinc-800/80 dark:bg-zinc-950/80 transition-colors duration-300">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex flex-wrap h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
         {/* Brand */}
         <div className="flex items-center gap-2.5">
           <div className="rounded-lg bg-zinc-900 p-2 text-white dark:bg-white dark:text-zinc-900 transition-colors">
@@ -90,7 +90,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Controls */}
-        <div className="flex items-center gap-4">
+        <div className="flex flex-1 flex-wrap items-center justify-end gap-3">
           {/* Rate Limit Stats */}
           {rateLimit && (
             <div className="hidden md:flex items-center gap-1.5 rounded-full px-3 py-1 text-xs bg-zinc-100 text-zinc-600 dark:bg-zinc-900 dark:text-zinc-400">
@@ -121,7 +121,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     onShowInputToggle(false)
                   }
                 }}
-                className="absolute right-0 top-1/2 z-10 flex -translate-y-1/2 items-center gap-2 rounded-lg border border-zinc-200 hover:border-zinc-300 bg-white p-1.5 shadow-lg dark:border-zinc-800 dark:hover:border-zinc-700 dark:bg-zinc-900 w-72 transition-all animate-in fade-in slide-in-from-top-2 duration-200"
+                className="absolute inset-x-4 top-full z-10 mt-2 flex w-full max-w-[calc(100vw-2rem)] items-center gap-2 rounded-lg border border-zinc-200 hover:border-zinc-300 bg-white p-1.5 shadow-lg dark:border-zinc-800 dark:hover:border-zinc-700 dark:bg-zinc-900 transition-all animate-in fade-in slide-in-from-top-2 duration-200 sm:inset-auto sm:right-0 sm:top-full sm:mt-2 sm:w-auto sm:max-w-xs"
               >
                 <input
                   ref={inputRef}
@@ -130,13 +130,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onChange={(e) => setTokenInput(e.target.value)}
                   placeholder="Paste GitHub PAT token..."
                   aria-label="GitHub Personal Access Token"
-                  className="flex-1 bg-transparent px-2.5 py-1 text-xs text-zinc-900 focus:outline-none dark:text-white"
+                  className="flex-1 min-w-0 bg-transparent px-2.5 py-1 text-xs text-zinc-900 focus:outline-none dark:text-white"
                 />
                 <button
                   type="submit"
                   className="rounded bg-violet-600 px-2 py-1 text-xs font-medium text-white hover:bg-violet-700 active:bg-violet-800 transition-colors"
                 >
-                  {isSaved ? <Check className="h-3 w-3" /> : 'Save'}
+                  {isSaved ? <Check className="h-3 w-3" /> : 'Simpan'}
                 </button>
                 {patToken && (
                   <button
@@ -144,7 +144,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     onClick={handleClearToken}
                     className="rounded bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 px-2 py-1 text-xs font-medium text-zinc-600 dark:text-zinc-300 transition-colors"
                   >
-                    Clear
+                    Hapus
                   </button>
                 )}
               </form>
@@ -159,7 +159,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               }`}
             >
               <Key className="h-3.5 w-3.5" />
-              <span>{patToken ? 'PAT Active' : 'Set PAT Token'}</span>
+              <span>{patToken ? 'PAT Aktif' : 'Setel Token PAT'}</span>
             </button>
           </div>
 
