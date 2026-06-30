@@ -25,7 +25,7 @@ interface RateLimit {
   reset: number
 }
 
-const PRESET_USERS = ['torvalds', 'gaearon', 'taylorotwell', 'yyx990803']
+const PRESET_USERS = ['sandhikagalih', 'Duta46', 'andarass']
 
 const getErrorMessage = (err: unknown) => {
   return err instanceof Error ? err.message : 'Terjadi kesalahan jaringan yang tidak terduga.'
